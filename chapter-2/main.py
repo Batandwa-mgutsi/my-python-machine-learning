@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import perceptron as pt
+import adaline as ad
 import helpers as helpers
 
 s = 'https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data'
@@ -57,4 +58,33 @@ helpers.plot_decision_regions(X, y, classifier=ppn)
 plt.xlabel('sepal length [cm]')
 plt.ylabel('petal length [cm]')
 plt.legend(loc='upper left')
+plt.show()
+
+
+# pg 91
+# It often requires some experimentation to find a good learning for optimal
+# convergence. Here we'll experiment with a learning rate of '0.1' and '0.0001',
+# and plot the cost functions versus the epochs to see how well the Adaline
+# implementation learns from the training data.
+
+# FYI, the learning rate and number of epochs are the hyperparameters (tuning parameters)
+# of the perceptron and Adaline learning algorithms.
+
+# Findings:
+#   A big learning rate may over shoot the global minimum
+#   A small learning rate value moves gradually to the direction of the global minimum, and
+#   therefore requires more epochs (iterations) to reach it.
+
+fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(10, 4))
+ada1 = ad.AdalineGD(n_iter=300, eta=0.01).fit(X, y)
+ax[0].plot(range(1, len(ada1.cost_)+1), np.log10(ada1.cost_), marker='o')
+ax[0].set_xlabel('Epochs')
+ax[0].set_ylabel('log(Sum-squared-error)')
+ax[0].set_title('Adaline - Learning rate 0.01')
+
+ada2 = ad.AdalineGD(n_iter=300, eta=0.0001).fit(X, y)
+ax[1].plot(range(1, len(ada2.cost_)+1), ada2.cost_, marker='o')
+ax[1].set_xlabel('Epochs')
+ax[1].set_ylabel('Sum-squared-error')
+ax[1].set_title('Adaline - Learning rate 0.0001')
 plt.show()
